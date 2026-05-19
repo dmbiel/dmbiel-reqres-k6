@@ -67,17 +67,17 @@ The test strategy follows a lightweight non-functional testing model:
 
 2. Load test
 
-   Simulates a small and stable amount of virtual users to validate average API behavior.
+   Simulates a small, stable, read-heavy request rate to validate average API behavior.
 
 3. Stress test
 
-   Gradually increases virtual users to observe behavior under higher-than-normal traffic.
+   Gradually increases request arrival rate to observe behavior under higher-than-normal traffic without exhausting the public API quota.
 
 4. Spike test
 
-   Simulates a short traffic increase to observe short-term response behavior.
+   Simulates a short request-rate increase to observe short-term response behavior.
 
-Because ReqRes is a public shared API, the scenarios intentionally use conservative traffic levels.
+Because ReqRes is a public shared API with a free-tier daily request limit, the scenarios intentionally use conservative traffic levels. Repeated write-like and auth-like requests are kept in the smoke scenario only; the load, stress, and spike scenarios are read-heavy and rate-limited to reduce the risk of quota exhaustion, rate limits, or WAF blocks.
 
 ## Repository structure
 
@@ -166,12 +166,12 @@ The npm scripts export JSON summaries into the `results/` directory.
 
 ## Available scenarios
 
-| Scenario | Command | Purpose | Max VUs |
-|---|---|---|---:|
-| Smoke | `k6 run scenarios/smoke.js` | API availability, key validation, main flows, delayed endpoint coverage | 1 |
-| Load | `k6 run scenarios/load.js` | Conservative average load profile | 5 |
-| Stress | `k6 run scenarios/stress.js` | Controlled higher-than-normal traffic | 10 |
-| Spike | `k6 run scenarios/spike.js` | Short traffic increase | 8 |
+| Scenario | Command | Purpose | Traffic model | Approx. requests |
+|---|---|---|---|---:|
+| Smoke | `k6 run scenarios/smoke.js` | API availability, key validation, main flows, delayed endpoint coverage | 1 VU, 1 iteration | 6 |
+| Load | `k6 run scenarios/load.js` | Conservative read-heavy average load profile | Ramping arrival rate, max 3 VUs | ~25 |
+| Stress | `k6 run scenarios/stress.js` | Controlled higher-than-normal traffic | Ramping arrival rate, max 5 VUs | ~30 |
+| Spike | `k6 run scenarios/spike.js` | Short traffic increase | Ramping arrival rate, max 4 VUs | ~10 |
 
 ## Thresholds and quality gates
 
@@ -183,6 +183,8 @@ Current default thresholds:
 - 95th percentile response time should stay below defined scenario-specific limits.
 - k6 checks should pass in at least 90-95% of cases.
 - The smoke scenario has separate response-time thresholds for standard, negative, and delayed flows.
+
+The load, stress, and spike scenarios intentionally focus on read endpoints and use request-rate executors with small request budgets. This keeps repeated traffic against ReqRes conservative while still demonstrating scenario modeling, thresholds, checks, and CI quality gates.
 
 If a threshold fails, k6 exits with a non-zero status code, which fails the CI pipeline.
 
@@ -225,7 +227,7 @@ Generated report files are ignored by Git so the repository stays clean:
 
 ## Limitations
 
-ReqRes is an external public service. Results can be affected by network latency, rate limits, WAF behavior, service availability, or shared infrastructure constraints.
+ReqRes is an external public service. Results can be affected by network latency, daily free-tier limits, rate limits, WAF behavior, service availability, or shared infrastructure constraints. If repeated write-like or auth-like requests are executed under load, or if the daily request quota is exhausted, ReqRes may reject responses even when the test code is correct.
 
 This repository intentionally avoids aggressive load levels. The scenarios are designed to demonstrate k6 architecture, validation, quality gates, and CI integration, not to benchmark ReqRes or generate high traffic against a shared API.
 

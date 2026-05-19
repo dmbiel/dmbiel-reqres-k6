@@ -6,11 +6,15 @@ export const options = {
   summaryTrendStats,
   scenarios: {
     small_spike: {
-      executor: 'ramping-vus',
+      executor: 'ramping-arrival-rate',
+      startRate: 0,
+      timeUnit: '1m',
+      preAllocatedVUs: 2,
+      maxVUs: 4,
       stages: [
-        { duration: '10s', target: 2 },
-        { duration: '10s', target: 8 },
-        { duration: '20s', target: 8 },
+        { duration: '10s', target: 6 },
+        { duration: '10s', target: 18 },
+        { duration: '20s', target: 18 },
         { duration: '10s', target: 0 },
       ],
     },
