@@ -129,6 +129,15 @@ Install k6 using the official Grafana k6 installation guide for your operating s
 
 The API key is never stored in this repository.
 
+Use `.env.example` as a local template:
+
+```text
+REQRES_API_KEY=your-api-key
+ENVIRONMENT=prod
+```
+
+Keep the real `.env` file local only. It is ignored by Git.
+
 ## How to run locally
 
 Bash:
@@ -192,7 +201,18 @@ The `GET /api/users/23` flow is an expected negative check. The HTTP client conf
 
 ## GitHub Actions CI
 
-The workflow in `.github/workflows/k6.yml` runs the smoke scenario on:
+The workflow in `.github/workflows/k6.yml` runs two jobs:
+
+- `Static validation`
+  - validates JavaScript syntax with `node --check`;
+  - validates k6 scenario configuration with `k6 inspect`;
+  - does not call ReqRes and does not consume API quota.
+- `Run k6 tests`
+  - runs the selected k6 scenario;
+  - uses `REQRES_API_KEY` from GitHub Secrets;
+  - exports and uploads a JSON summary artifact.
+
+The k6 test job runs the smoke scenario on:
 
 - push to `main`;
 - pull requests targeting `main`.
@@ -227,11 +247,55 @@ Generated report files are ignored by Git so the repository stays clean:
 - `results/*.json`
 - `results/*.html`
 
+## Troubleshooting
+
+### `429 rate_limit_exceeded`
+
+ReqRes free-tier API keys have a daily request limit. If the limit is exhausted, k6 checks fail because endpoints return `429` instead of expected `200`, `201`, or `404` responses.
+
+What to do:
+
+- wait until the reset time reported by ReqRes;
+- avoid repeatedly running manual `load`, `stress`, and `spike` scenarios;
+- use the static validation CI job when you only need to validate code and k6 scenario configuration.
+
+### `401` or `403`
+
+ReqRes rejected the API key.
+
+Check that:
+
+- `REQRES_API_KEY` is set locally;
+- the GitHub Actions secret is named exactly `REQRES_API_KEY`;
+- requests include the `x-api-key` header.
+
+### Missing `REQRES_API_KEY`
+
+The HTTP client intentionally throws a clear error if the API key is missing. This prevents accidental unauthenticated traffic and makes local or CI setup issues visible immediately.
+
+### Load scenario fails but smoke passes
+
+ReqRes is a shared public API, so load-style scenarios can be affected by quota, rate limiting, WAF behavior, or temporary service-side controls. The non-smoke scenarios are intentionally read-heavy and request-budgeted, but they should still be run sparingly on the free tier.
+
 ## Limitations
 
 ReqRes is an external public service. Results can be affected by network latency, daily free-tier limits, rate limits, WAF behavior, service availability, or shared infrastructure constraints. If repeated write-like or auth-like requests are executed under load, or if the daily request quota is exhausted, ReqRes may reject responses even when the test code is correct.
 
 This repository intentionally avoids aggressive load levels. The scenarios are designed to demonstrate k6 architecture, validation, quality gates, and CI integration, not to benchmark ReqRes or generate high traffic against a shared API.
+
+## GitHub repository setup
+
+Suggested repository description:
+
+```text
+Portfolio API performance testing project for ReqRes using Grafana k6, thresholds, checks, GitHub Actions, and safe API key handling.
+```
+
+Suggested repository topics:
+
+```text
+k6, performance-testing, load-testing, api-testing, qa-automation, github-actions, reqres
+```
 
 ## Future improvements
 
