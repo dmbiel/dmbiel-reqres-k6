@@ -2,17 +2,19 @@ import { sleep } from 'k6';
 import { summaryTrendStats } from '../helpers/summary.js';
 import { getUsers } from '../tests/getUsers.test.js';
 import { getSingleUser } from '../tests/getSingleUser.test.js';
-import { createUser } from '../tests/createUser.test.js';
-import { loginSuccessful } from '../tests/login.test.js';
 
 export const options = {
   summaryTrendStats,
   scenarios: {
     average_load: {
-      executor: 'ramping-vus',
+      executor: 'ramping-arrival-rate',
+      startRate: 0,
+      timeUnit: '1m',
+      preAllocatedVUs: 2,
+      maxVUs: 3,
       stages: [
-        { duration: '30s', target: 3 },
-        { duration: '1m', target: 5 },
+        { duration: '30s', target: 6 },
+        { duration: '1m', target: 10 },
         { duration: '30s', target: 0 },
       ],
     },
@@ -27,8 +29,6 @@ export const options = {
 export default function () {
   getUsers();
   getSingleUser();
-  createUser();
-  loginSuccessful();
 
   sleep(1);
 }
