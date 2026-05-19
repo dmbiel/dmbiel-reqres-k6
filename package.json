@@ -1,0 +1,25 @@
+{
+  "name": "dmbiel-reqres-k6",
+  "version": "1.0.0",
+  "description": "API performance testing project for ReqRes using Grafana k6",
+  "type": "module",
+  "scripts": {
+    "test:smoke": "k6 run --summary-export results/k6-summary-smoke.json scenarios/smoke.js",
+    "test:load": "k6 run --summary-export results/k6-summary-load.json scenarios/load.js",
+    "test:stress": "k6 run --summary-export results/k6-summary-stress.json scenarios/stress.js",
+    "test:spike": "k6 run --summary-export results/k6-summary-spike.json scenarios/spike.js"
+  },
+  "keywords": [
+    "k6",
+    "performance-testing",
+    "load-testing",
+    "api-testing",
+    "qa-automation",
+    "reqres"
+  ],
+  "author": "Dmytro Bieliaiev",
+  "license": "MIT",
+  "dependencies": {
+    "k6": "^0.0.0"
+  }
+}

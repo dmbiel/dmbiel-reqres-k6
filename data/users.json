@@ -1,0 +1,10 @@
+{
+  "createUser": {
+    "name": "Dima QA",
+    "job": "Senior Automation QA"
+  },
+  "loginSuccessful": {
+    "email": "eve.holt@reqres.in",
+    "password": "cityslicka"
+  }
+}
