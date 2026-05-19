@@ -210,7 +210,9 @@ Before enabling CI, add the API key as a GitHub Actions repository secret:
 REQRES_API_KEY
 ```
 
-The workflow uses `grafana/setup-k6-action`, runs k6, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
+The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
+
+The preflight step fails early with a clear message if ReqRes returns `429 rate_limit_exceeded`, `401`, or `403`. This prevents a quota issue from looking like a broken k6 script. The preflight request also consumes one ReqRes request, so avoid repeatedly running manual scenarios on the free tier.
 
 ## Reports and artifacts
 
