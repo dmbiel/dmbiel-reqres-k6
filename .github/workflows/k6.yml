@@ -54,6 +54,39 @@ jobs:
             exit 1
           fi
 
+      - name: Preflight ReqRes quota check
+        shell: bash
+        run: |
+          response_file="$(mktemp)"
+          status_code="$(
+            curl -sS \
+              -o "$response_file" \
+              -w "%{http_code}" \
+              -H "x-api-key: $REQRES_API_KEY" \
+              -H "X-Reqres-Env: prod" \
+              -H "User-Agent: dmbiel-reqres-k6/1.0" \
+              "https://reqres.in/api/users?page=1"
+          )"
+
+          if [ "$status_code" = "429" ]; then
+            reset_at="$(
+              node -e "const fs = require('fs'); const body = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log(body.current_usage?.resets_at || 'unknown');" "$response_file"
+            )"
+            echo "::error::ReqRes daily quota is exhausted. Reset at: $reset_at. Wait for reset before rerunning CI or manual load scenarios."
+            exit 1
+          fi
+
+          if [ "$status_code" = "401" ] || [ "$status_code" = "403" ]; then
+            echo "::error::ReqRes rejected the request with HTTP $status_code. Check the REQRES_API_KEY secret."
+            exit 1
+          fi
+
+          if [ "$status_code" -lt 200 ] || [ "$status_code" -ge 300 ]; then
+            echo "::error::ReqRes preflight request returned unexpected HTTP $status_code."
+            cat "$response_file"
+            exit 1
+          fi
+
       - name: Run k6 scenario
         shell: bash
         run: |
