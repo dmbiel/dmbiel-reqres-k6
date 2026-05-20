@@ -1,5 +1,7 @@
 # dmbiel-reqres-k6
 
+[![k6 API Performance Tests](https://github.com/dmbiel/dmbiel-reqres-k6/actions/workflows/k6.yml/badge.svg)](https://github.com/dmbiel/dmbiel-reqres-k6/actions/workflows/k6.yml)
+
 ## Overview
 
 This repository demonstrates API performance testing using Grafana k6 against the ReqRes API.
@@ -84,12 +86,15 @@ Because ReqRes is a public shared API with a free-tier daily request limit, the 
 ```text
 dmbiel-reqres-k6/
 |-- .github/
-|   `-- workflows/
-|       `-- k6.yml
+|   |-- workflows/
+|   |   `-- k6.yml
+|   `-- pull_request_template.md
 |-- config/
 |   `-- environments.js
 |-- data/
 |   `-- users.json
+|-- docs/
+|   `-- ci-and-limits.md
 |-- helpers/
 |   |-- checks.js
 |   |-- httpClient.js
@@ -239,6 +244,8 @@ REQRES_API_KEY
 The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
 
 The preflight step fails early with a clear message if ReqRes returns `429 rate_limit_exceeded`, `401`, or `403`. This prevents a quota issue from looking like a broken k6 script. The preflight request also consumes one ReqRes request, so avoid repeatedly running manual scenarios on the free tier.
+
+For more detail about CI triggers, quota-aware scenario budgets, and no-network validation, see [CI and ReqRes Limits](docs/ci-and-limits.md).
 
 ## Reports and artifacts
 
