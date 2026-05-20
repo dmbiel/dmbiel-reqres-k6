@@ -219,6 +219,8 @@ The k6 test job runs the smoke scenario on:
 
 It does not run again on `push` to `main` after a PR merge. This avoids spending ReqRes quota twice for the same change: once on the PR and once again on the merge commit.
 
+Documentation-only pull request changes such as `README.md`, `.env.example`, and `LICENSE` do not trigger the workflow. Manual runs through `workflow_dispatch` remain available when needed.
+
 Draft pull requests run static validation only. The quota-consuming k6 job starts when the PR is ready for review.
 
 Manual runs are supported through `workflow_dispatch`, with scenario selection:
