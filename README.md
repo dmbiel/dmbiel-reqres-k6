@@ -214,8 +214,12 @@ The workflow in `.github/workflows/k6.yml` runs two jobs:
 
 The k6 test job runs the smoke scenario on:
 
-- push to `main`;
-- pull requests targeting `main`.
+- pull requests targeting `main`;
+- pull requests marked ready for review.
+
+It does not run again on `push` to `main` after a PR merge. This avoids spending ReqRes quota twice for the same change: once on the PR and once again on the merge commit.
+
+Draft pull requests run static validation only. The quota-consuming k6 job starts when the PR is ready for review.
 
 Manual runs are supported through `workflow_dispatch`, with scenario selection:
 
