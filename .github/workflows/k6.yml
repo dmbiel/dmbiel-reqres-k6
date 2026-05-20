@@ -1,12 +1,18 @@
 name: k6 API Performance Tests
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths-ignore:
+      - README.md
+      - .env.example
+      - LICENSE
   workflow_dispatch:
     inputs:
       scenario:
@@ -20,10 +26,45 @@ on:
           - stress
           - spike
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  static-validation:
+    name: Static validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find . -name "*.js" -not -path "./node_modules/*" -print0)
+
+      - name: Validate k6 scenario options
+        shell: bash
+        run: |
+          for scenario in scenarios/*.js; do
+            echo "Inspecting $scenario"
+            k6 inspect "$scenario" > /dev/null
+          done
+
   k6-tests:
     name: Run k6 tests
     runs-on: ubuntu-latest
+    needs: static-validation
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
 
     env:
       REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
