@@ -1,5 +1,6 @@
 import { post } from '../helpers/httpClient.js';
 import { checkStatus, checkJsonField, checkResponseTime } from '../helpers/checks.js';
+import { recordEndpointMetrics } from '../helpers/metrics.js';
 
 const payload = {
   name: 'Dima QA',
@@ -18,6 +19,7 @@ export function createUser() {
   checkStatus(response, 201);
   checkJsonField(response, 'id');
   checkResponseTime(response, 1000);
+  recordEndpointMetrics('create_user', response, 201);
 
   return response;
 }

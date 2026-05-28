@@ -94,10 +94,14 @@ dmbiel-reqres-k6/
 |-- data/
 |   `-- users.json
 |-- docs/
-|   `-- ci-and-limits.md
+|   |-- ci-and-limits.md
+|   |-- performance-test-strategy.md
+|   |-- quality-gates.md
+|   `-- runbook.md
 |-- helpers/
 |   |-- checks.js
 |   |-- httpClient.js
+|   |-- metrics.js
 |   `-- summary.js
 |-- scenarios/
 |   |-- smoke.js
@@ -112,6 +116,8 @@ dmbiel-reqres-k6/
 |   `-- delayedResponse.test.js
 |-- results/
 |   `-- .gitkeep
+|-- scripts/
+|   `-- writeK6Summary.js
 |-- .gitignore
 |-- README.md
 `-- package.json
@@ -241,11 +247,17 @@ Before enabling CI, add the API key as a GitHub Actions repository secret:
 REQRES_API_KEY
 ```
 
-The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
+The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a readable GitHub Actions step summary, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
 
 The preflight step fails early with a clear message if ReqRes returns `429 rate_limit_exceeded`, `401`, or `403`. This prevents a quota issue from looking like a broken k6 script. The preflight request also consumes one ReqRes request, so avoid repeatedly running manual scenarios on the free tier.
 
 For more detail about CI triggers, quota-aware scenario budgets, and no-network validation, see [CI and ReqRes Limits](docs/ci-and-limits.md).
+
+For test governance and interpretation, see:
+
+- [Performance Test Strategy](docs/performance-test-strategy.md)
+- [Quality Gates](docs/quality-gates.md)
+- [Runbook](docs/runbook.md)
 
 ## Reports and artifacts
 
