@@ -12,9 +12,11 @@ on:
     paths-ignore:
       - README.md
       - docs/**
+      - CONTRIBUTING.md
       - .env.example
       - LICENSE
       - .github/pull_request_template.md
+      - .github/ISSUE_TEMPLATE/**
   workflow_dispatch:
     inputs:
       scenario:
