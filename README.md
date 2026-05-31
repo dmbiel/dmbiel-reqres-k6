@@ -86,6 +86,8 @@ Because ReqRes is a public shared API with a free-tier daily request limit, the 
 ```text
 dmbiel-reqres-k6/
 |-- .github/
+|   |-- ISSUE_TEMPLATE/
+|   |   `-- performance-scenario-change.md
 |   |-- workflows/
 |   |   `-- k6.yml
 |   `-- pull_request_template.md
@@ -95,8 +97,11 @@ dmbiel-reqres-k6/
 |   `-- users.json
 |-- docs/
 |   |-- ci-and-limits.md
+|   |-- metrics-catalog.md
 |   |-- performance-test-strategy.md
 |   |-- quality-gates.md
+|   |-- scenario-design.md
+|   |-- secrets-management.md
 |   `-- runbook.md
 |-- helpers/
 |   |-- checks.js
@@ -119,9 +124,23 @@ dmbiel-reqres-k6/
 |-- scripts/
 |   `-- writeK6Summary.js
 |-- .gitignore
+|-- CONTRIBUTING.md
 |-- README.md
 `-- package.json
 ```
+
+## Project documentation
+
+The repository includes supporting QA governance documents:
+
+- [Performance Test Strategy](docs/performance-test-strategy.md)
+- [Scenario Design](docs/scenario-design.md)
+- [Metrics Catalog](docs/metrics-catalog.md)
+- [Quality Gates](docs/quality-gates.md)
+- [CI and ReqRes Limits](docs/ci-and-limits.md)
+- [Runbook](docs/runbook.md)
+- [Secrets Management](docs/secrets-management.md)
+- [Contributing Guide](CONTRIBUTING.md)
 
 ## Prerequisites
 
@@ -230,7 +249,7 @@ The k6 test job runs the smoke scenario on:
 
 It does not run again on `push` to `main` after a PR merge. This avoids spending ReqRes quota twice for the same change: once on the PR and once again on the merge commit.
 
-Documentation-only pull request changes such as `README.md`, `.env.example`, and `LICENSE` do not trigger the workflow. Manual runs through `workflow_dispatch` remain available when needed.
+Documentation-only and governance-only pull request changes such as `README.md`, `docs/**`, `CONTRIBUTING.md`, `.env.example`, `LICENSE`, and GitHub issue/PR templates do not trigger the workflow. Manual runs through `workflow_dispatch` remain available when needed.
 
 Draft pull requests run static validation only. The quota-consuming k6 job starts when the PR is ready for review.
 
@@ -256,8 +275,11 @@ For more detail about CI triggers, quota-aware scenario budgets, and no-network 
 For test governance and interpretation, see:
 
 - [Performance Test Strategy](docs/performance-test-strategy.md)
+- [Scenario Design](docs/scenario-design.md)
+- [Metrics Catalog](docs/metrics-catalog.md)
 - [Quality Gates](docs/quality-gates.md)
 - [Runbook](docs/runbook.md)
+- [Secrets Management](docs/secrets-management.md)
 
 ## Reports and artifacts
 
