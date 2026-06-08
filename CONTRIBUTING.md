@@ -10,6 +10,7 @@ Before changing scenarios, helpers, or test flows:
 
 - understand which ReqRes endpoints are affected;
 - estimate the request budget impact;
+- update `config/thresholds.js` when quality gates change;
 - decide whether the change needs a live k6 run;
 - prefer no-network validation first;
 - keep secrets out of commits and logs.

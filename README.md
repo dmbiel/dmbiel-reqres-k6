@@ -94,7 +94,8 @@ dmbiel-reqres-k6/
 |   |   `-- k6.yml
 |   `-- pull_request_template.md
 |-- config/
-|   `-- environments.js
+|   |-- environments.js
+|   `-- thresholds.js
 |-- baselines/
 |   |-- README.md
 |   `-- .gitkeep
@@ -108,6 +109,7 @@ dmbiel-reqres-k6/
 |   |-- quality-gates.md
 |   |-- scenario-design.md
 |   |-- secrets-management.md
+|   |-- threshold-configuration.md
 |   `-- runbook.md
 |-- helpers/
 |   |-- checks.js
@@ -148,6 +150,7 @@ The repository includes supporting QA governance documents:
 - [Scenario Design](docs/scenario-design.md)
 - [Metrics Catalog](docs/metrics-catalog.md)
 - [Quality Gates](docs/quality-gates.md)
+- [Threshold Configuration](docs/threshold-configuration.md)
 - [CI and ReqRes Limits](docs/ci-and-limits.md)
 - [Runbook](docs/runbook.md)
 - [Secrets Management](docs/secrets-management.md)
@@ -261,6 +264,8 @@ Current default thresholds:
 
 The load, stress, and spike scenarios intentionally focus on read endpoints and use request-rate executors with small request budgets. This keeps repeated traffic against ReqRes conservative while still demonstrating scenario modeling, thresholds, checks, and CI quality gates.
 
+Threshold presets are centralized in `config/thresholds.js`, so scenario files stay focused on execution model and endpoint mix.
+
 If a threshold fails, k6 exits with a non-zero status code, which fails the CI pipeline.
 
 The `GET /api/users/23` flow is an expected negative check. The HTTP client configures k6 expected statuses so the expected `404` does not count as an HTTP request failure, while unexpected `401`, `403`, and `5xx` responses still fail quality gates.
@@ -317,6 +322,7 @@ For test governance and interpretation, see:
 - [Scenario Design](docs/scenario-design.md)
 - [Metrics Catalog](docs/metrics-catalog.md)
 - [Quality Gates](docs/quality-gates.md)
+- [Threshold Configuration](docs/threshold-configuration.md)
 - [Runbook](docs/runbook.md)
 - [Secrets Management](docs/secrets-management.md)
 

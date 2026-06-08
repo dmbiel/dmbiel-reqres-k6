@@ -1,4 +1,5 @@
 import { sleep } from 'k6';
+import { spikeThresholds } from '../config/thresholds.js';
 import { summaryTrendStats } from '../helpers/summary.js';
 import { getUsers } from '../tests/getUsers.test.js';
 
@@ -19,13 +20,7 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    http_req_failed: ['rate<0.05'],
-    http_req_duration: ['p(95)<2000'],
-    endpoint_list_users_success_rate: ['rate>0.90'],
-    endpoint_list_users_duration: ['p(95)<2000'],
-    checks: ['rate>0.90'],
-  },
+  thresholds: spikeThresholds,
 };
 
 export default function () {

@@ -1,4 +1,5 @@
 import { sleep } from 'k6';
+import { loadThresholds } from '../config/thresholds.js';
 import { summaryTrendStats } from '../helpers/summary.js';
 import { getUsers } from '../tests/getUsers.test.js';
 import { getSingleUser } from '../tests/getSingleUser.test.js';
@@ -19,15 +20,7 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    http_req_failed: ['rate<0.02'],
-    http_req_duration: ['p(95)<1200', 'p(99)<2000'],
-    endpoint_list_users_success_rate: ['rate>0.95'],
-    endpoint_single_user_success_rate: ['rate>0.95'],
-    endpoint_list_users_duration: ['p(95)<1200'],
-    endpoint_single_user_duration: ['p(95)<1200'],
-    checks: ['rate>0.95'],
-  },
+  thresholds: loadThresholds,
 };
 
 export default function () {

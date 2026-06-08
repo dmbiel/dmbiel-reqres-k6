@@ -79,6 +79,8 @@ Thresholds are set to show automated gating while staying realistic for an exter
 | Stress | More tolerant because traffic is intentionally above normal |
 | Spike | More tolerant because the run is short and bursty |
 
+Threshold presets live in `config/thresholds.js`, while scenario files define the traffic model and endpoint mix.
+
 Thresholds should only be relaxed when there is a clear strategy reason, not just to make a failing run pass.
 
 ## Review Checklist For Scenario Changes

@@ -6,6 +6,8 @@ Quality gates define when a k6 run should pass or fail. They make performance ch
 
 In this project, k6 thresholds are the automated pass/fail criteria.
 
+Threshold presets are centralized in `config/thresholds.js` and imported by the scenario files. See [Threshold Configuration](threshold-configuration.md) for change guidance.
+
 ## Global Gates
 
 | Metric | Purpose | Typical threshold |
