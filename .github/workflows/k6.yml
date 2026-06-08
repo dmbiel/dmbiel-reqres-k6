@@ -12,6 +12,7 @@ on:
     paths-ignore:
       - README.md
       - docs/**
+      - baselines/**
       - CONTRIBUTING.md
       - .env.example
       - LICENSE
@@ -148,6 +149,15 @@ jobs:
           SCENARIO_NAME: ${{ steps.scenario.outputs.scenario }}
           K6_SUMMARY_FILE: results/k6-summary-${{ steps.scenario.outputs.scenario }}.json
         run: node scripts/writeK6Summary.js
+
+      - name: Compare k6 summary with baseline
+        if: always()
+        shell: bash
+        env:
+          SCENARIO_NAME: ${{ steps.scenario.outputs.scenario }}
+          K6_CURRENT_SUMMARY_FILE: results/k6-summary-${{ steps.scenario.outputs.scenario }}.json
+          K6_BASELINE_SUMMARY_FILE: baselines/k6-summary-${{ steps.scenario.outputs.scenario }}.baseline.json
+        run: node scripts/compareK6Summary.js
 
       - name: Upload k6 summary
         uses: actions/upload-artifact@v4

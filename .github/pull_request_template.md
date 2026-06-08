@@ -14,4 +14,5 @@
 - [ ] No secrets or real `.env` values committed
 - [ ] Change does not introduce unnecessary ReqRes traffic
 - [ ] Scenario request budget reviewed if k6 traffic changed
+- [ ] Baseline update reviewed if `baselines/*.baseline.json` changed
 - [ ] Documentation-only change does not require k6 execution
