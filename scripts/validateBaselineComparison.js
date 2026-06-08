@@ -59,6 +59,7 @@ function runCase(testCase) {
     cwd: rootDir,
     env: {
       ...process.env,
+      GITHUB_STEP_SUMMARY: '',
       ...testCase.env,
     },
     encoding: 'utf8',
