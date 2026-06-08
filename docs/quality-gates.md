@@ -16,6 +16,16 @@ In this project, k6 thresholds are the automated pass/fail criteria.
 
 If any threshold fails, k6 exits with a non-zero status code and the CI job fails.
 
+## Baseline Comparison
+
+Baseline comparison is separate from thresholds.
+
+Thresholds define whether the current run passes the quality gate. Baseline comparison shows whether the current run materially changed compared with an accepted previous run.
+
+By default, baseline comparison is informational and does not fail CI. This is intentional because ReqRes is a shared public API and can be affected by external latency, rate limits, WAF behavior, or quota state.
+
+When baseline stability is proven, `K6_BASELINE_FAIL_ON_REGRESSION=true` can be enabled to turn comparison regressions into a CI failure.
+
 ## Endpoint Gates
 
 The suite also records endpoint-specific custom metrics:

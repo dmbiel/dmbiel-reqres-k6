@@ -16,6 +16,8 @@ It is written for portfolio reviewers and maintainers who want to understand whe
 | Checks fail but response time is low | API returned wrong status/body quickly | Inspect status codes and response body |
 | `http_req_failed` spikes | Unexpected HTTP statuses or network errors | Check k6 logs and preflight output |
 | JSON artifact missing | k6 did not reach summary export | Check preflight and k6 startup errors |
+| Baseline comparison skipped | Baseline JSON does not exist | Add a reviewed baseline if comparison is needed |
+| Baseline regression detected | Current run changed beyond tolerance | Compare threshold status, endpoint metrics, and public API conditions |
 
 ## Local Static Validation
 
@@ -94,8 +96,22 @@ Action:
 4. Decide whether the failure is:
    - a test expectation issue;
    - a ReqRes quota or WAF issue;
-   - a public API availability issue;
-   - a real endpoint behavior change.
+     - a public API availability issue;
+     - a real endpoint behavior change.
+
+## Baseline Regression
+
+Meaning:
+
+The current k6 summary differs from a reviewed baseline beyond the configured tolerance.
+
+Action:
+
+1. Check whether k6 thresholds still passed.
+2. Check whether the regression is global or endpoint-specific.
+3. Confirm there were no `429`, `401`, or `403` responses.
+4. Review whether scenario request budget changed.
+5. Treat the result as a review signal unless `K6_BASELINE_FAIL_ON_REGRESSION=true` is intentionally enabled.
 
 ## Manual Scenario Guidance
 

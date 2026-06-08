@@ -12,6 +12,7 @@ The project focuses on:
 - smoke, load, stress, and spike scenarios;
 - response validation with checks;
 - performance quality gates with thresholds;
+- baseline comparison reporting;
 - GitHub Actions integration;
 - safe secret management for API keys.
 
@@ -37,7 +38,7 @@ Performance testing portfolio projects often stop at a single script that sends 
 | Language | JavaScript ES modules |
 | CI | GitHub Actions |
 | Target API | ReqRes |
-| Reports | k6 console summary and JSON summary artifact |
+| Reports | k6 console summary, JSON summary artifact, GitHub Actions summary, optional baseline comparison |
 
 ## Tested API
 
@@ -93,9 +94,13 @@ dmbiel-reqres-k6/
 |   `-- pull_request_template.md
 |-- config/
 |   `-- environments.js
+|-- baselines/
+|   |-- README.md
+|   `-- .gitkeep
 |-- data/
 |   `-- users.json
 |-- docs/
+|   |-- baseline-comparison.md
 |   |-- ci-and-limits.md
 |   |-- metrics-catalog.md
 |   |-- performance-test-strategy.md
@@ -122,6 +127,7 @@ dmbiel-reqres-k6/
 |-- results/
 |   `-- .gitkeep
 |-- scripts/
+|   |-- compareK6Summary.js
 |   `-- writeK6Summary.js
 |-- .gitignore
 |-- CONTRIBUTING.md
@@ -134,6 +140,7 @@ dmbiel-reqres-k6/
 The repository includes supporting QA governance documents:
 
 - [Performance Test Strategy](docs/performance-test-strategy.md)
+- [Baseline Comparison](docs/baseline-comparison.md)
 - [Scenario Design](docs/scenario-design.md)
 - [Metrics Catalog](docs/metrics-catalog.md)
 - [Quality Gates](docs/quality-gates.md)
@@ -203,6 +210,15 @@ npm run test:spike
 
 The npm scripts export JSON summaries into the `results/` directory.
 
+To compare an existing summary with a reviewed baseline without sending new API requests:
+
+```bash
+npm run report:compare:smoke
+npm run report:compare:load
+npm run report:compare:stress
+npm run report:compare:spike
+```
+
 ## Available scenarios
 
 | Scenario | Command | Purpose | Traffic model | Approx. requests |
@@ -240,6 +256,7 @@ The workflow in `.github/workflows/k6.yml` runs two jobs:
 - `Run k6 tests`
   - runs the selected k6 scenario;
   - uses `REQRES_API_KEY` from GitHub Secrets;
+  - compares the JSON summary with an optional reviewed baseline;
   - exports and uploads a JSON summary artifact.
 
 The k6 test job runs the smoke scenario on:
@@ -249,7 +266,7 @@ The k6 test job runs the smoke scenario on:
 
 It does not run again on `push` to `main` after a PR merge. This avoids spending ReqRes quota twice for the same change: once on the PR and once again on the merge commit.
 
-Documentation-only and governance-only pull request changes such as `README.md`, `docs/**`, `CONTRIBUTING.md`, `.env.example`, `LICENSE`, and GitHub issue/PR templates do not trigger the workflow. Manual runs through `workflow_dispatch` remain available when needed.
+Documentation-only, baseline-only, and governance-only pull request changes such as `README.md`, `docs/**`, `baselines/**`, `CONTRIBUTING.md`, `.env.example`, `LICENSE`, and GitHub issue/PR templates do not trigger the workflow. Manual runs through `workflow_dispatch` remain available when needed.
 
 Draft pull requests run static validation only. The quota-consuming k6 job starts when the PR is ready for review.
 
@@ -266,7 +283,7 @@ Before enabling CI, add the API key as a GitHub Actions repository secret:
 REQRES_API_KEY
 ```
 
-The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a readable GitHub Actions step summary, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
+The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a readable GitHub Actions step summary, compares the summary with an optional baseline, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
 
 The preflight step fails early with a clear message if ReqRes returns `429 rate_limit_exceeded`, `401`, or `403`. This prevents a quota issue from looking like a broken k6 script. The preflight request also consumes one ReqRes request, so avoid repeatedly running manual scenarios on the free tier.
 
@@ -275,6 +292,7 @@ For more detail about CI triggers, quota-aware scenario budgets, and no-network 
 For test governance and interpretation, see:
 
 - [Performance Test Strategy](docs/performance-test-strategy.md)
+- [Baseline Comparison](docs/baseline-comparison.md)
 - [Scenario Design](docs/scenario-design.md)
 - [Metrics Catalog](docs/metrics-catalog.md)
 - [Quality Gates](docs/quality-gates.md)
@@ -287,6 +305,7 @@ Local and CI runs provide:
 
 - k6 console summary;
 - JSON summary files through `--summary-export`;
+- optional baseline comparison in the GitHub Actions step summary;
 - GitHub Actions artifact upload for CI summaries.
 
 Generated report files are ignored by Git so the repository stays clean:
@@ -348,8 +367,8 @@ k6, performance-testing, load-testing, api-testing, qa-automation, github-action
 
 - Add Grafana Cloud k6 integration.
 - Add HTML report generation.
-- Add custom metrics per endpoint.
-- Expand endpoint-specific thresholds for all flows.
+- Add additional custom metrics for data volume and grouped flow behavior.
+- Tune endpoint-specific thresholds after more clean baseline runs.
 - Add test data parametrization.
 - Add GitHub Pages for publishing test reports.
-- Add comparison between baseline and latest run.
+- Add historical trend dashboards for baseline changes over time.

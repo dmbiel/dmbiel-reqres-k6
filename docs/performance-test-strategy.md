@@ -14,6 +14,7 @@ The project demonstrates:
 - thresholds as automated quality gates;
 - endpoint-level metrics;
 - CI integration with readable reporting;
+- optional baseline comparison for regression review;
 - secret handling through environment variables and GitHub Secrets;
 - explicit public API risk management.
 
@@ -22,6 +23,7 @@ The project demonstrates:
 - Validate that key ReqRes API flows return expected status codes and response fields.
 - Measure response time trends for standard, negative, delayed, and read-heavy flows.
 - Provide automated pass/fail signals through k6 thresholds.
+- Compare current results against reviewed baselines when available.
 - Keep CI output understandable for both QA and engineering reviewers.
 - Prevent accidental overuse of a shared public API.
 
