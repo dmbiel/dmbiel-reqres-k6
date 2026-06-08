@@ -16,6 +16,7 @@ It is written for portfolio reviewers and maintainers who want to understand whe
 | Checks fail but response time is low | API returned wrong status/body quickly | Inspect status codes and response body |
 | `http_req_failed` spikes | Unexpected HTTP statuses or network errors | Check k6 logs and preflight output |
 | JSON artifact missing | k6 did not reach summary export | Check preflight and k6 startup errors |
+| HTML artifact missing | HTML generation did not run or summary path was wrong | Check `Generate k6 HTML report` step |
 | Baseline comparison skipped | Baseline JSON does not exist | Add a reviewed baseline if comparison is needed |
 | Baseline regression detected | Current run changed beyond tolerance | Compare threshold status, endpoint metrics, and public API conditions |
 
@@ -126,10 +127,12 @@ The project is designed to show performance testing discipline, not to consume t
 ## Artifact Review
 
 CI uploads JSON summaries from `results/*.json`.
+CI also uploads HTML reports from `results/*.html`.
 
 Use artifacts when you need:
 
 - exact metric values;
+- a visual report for quick review;
 - endpoint-level custom metrics;
 - historical comparison between runs;
 - evidence for a PR discussion.

@@ -46,6 +46,7 @@ k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
 
 npm run validate:baseline-comparison
+npm run validate:html-report
 ```
 
 ## Live Run Guidance

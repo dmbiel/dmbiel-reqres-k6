@@ -12,7 +12,12 @@
     "report:compare:load": "node scripts/compareK6Summary.js results/k6-summary-load.json baselines/k6-summary-load.baseline.json",
     "report:compare:stress": "node scripts/compareK6Summary.js results/k6-summary-stress.json baselines/k6-summary-stress.baseline.json",
     "report:compare:spike": "node scripts/compareK6Summary.js results/k6-summary-spike.json baselines/k6-summary-spike.baseline.json",
-    "validate:baseline-comparison": "node scripts/validateBaselineComparison.js"
+    "report:html:smoke": "node scripts/writeHtmlReport.js results/k6-summary-smoke.json results/k6-summary-smoke.html",
+    "report:html:load": "node scripts/writeHtmlReport.js results/k6-summary-load.json results/k6-summary-load.html",
+    "report:html:stress": "node scripts/writeHtmlReport.js results/k6-summary-stress.json results/k6-summary-stress.html",
+    "report:html:spike": "node scripts/writeHtmlReport.js results/k6-summary-spike.json results/k6-summary-spike.html",
+    "validate:baseline-comparison": "node scripts/validateBaselineComparison.js",
+    "validate:html-report": "node scripts/validateHtmlReport.js"
   },
   "keywords": [
     "k6",
