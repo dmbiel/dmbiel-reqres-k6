@@ -22,6 +22,8 @@ export const options = {
   thresholds: {
     http_req_failed: ['rate<0.05'],
     http_req_duration: ['p(95)<2000'],
+    endpoint_list_users_success_rate: ['rate>0.90'],
+    endpoint_list_users_duration: ['p(95)<2000'],
     checks: ['rate>0.90'],
   },
 };

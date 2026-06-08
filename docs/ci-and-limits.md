@@ -28,6 +28,7 @@ It has two jobs:
    - runs a preflight ReqRes request;
    - fails early on `429`, `401`, or `403`;
    - runs the selected k6 scenario;
+   - publishes a readable GitHub Actions step summary;
    - exports the k6 JSON summary as a GitHub Actions artifact.
 
 ## Trigger Strategy
@@ -92,6 +93,22 @@ k6 inspect scenarios/load.js
 k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
 ```
+
+## Reporting
+
+Each k6 run exports two report surfaces:
+
+- GitHub Actions step summary for quick review;
+- JSON summary artifact for detailed analysis.
+
+The step summary includes:
+
+- scenario name;
+- checks pass/fail counts;
+- HTTP failure rate;
+- request count;
+- p95, p99, and average response time;
+- endpoint-level success rate and duration metrics.
 
 ## Manual Run Guidance
 

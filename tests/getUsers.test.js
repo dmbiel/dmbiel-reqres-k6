@@ -1,5 +1,6 @@
 import { get } from '../helpers/httpClient.js';
 import { checkStatus, checkJsonField, checkResponseTime } from '../helpers/checks.js';
+import { recordEndpointMetrics } from '../helpers/metrics.js';
 
 export function getUsers() {
   const response = get('/api/users?page=1', {
@@ -13,6 +14,7 @@ export function getUsers() {
   checkStatus(response, 200);
   checkJsonField(response, 'data');
   checkResponseTime(response, 1000);
+  recordEndpointMetrics('list_users', response, 200);
 
   return response;
 }

@@ -11,8 +11,12 @@ on:
       - ready_for_review
     paths-ignore:
       - README.md
+      - docs/**
+      - CONTRIBUTING.md
       - .env.example
       - LICENSE
+      - .github/pull_request_template.md
+      - .github/ISSUE_TEMPLATE/**
   workflow_dispatch:
     inputs:
       scenario:
@@ -129,12 +133,21 @@ jobs:
           fi
 
       - name: Run k6 scenario
+        id: k6
         shell: bash
         run: |
           mkdir -p results
           k6 run \
             --summary-export "results/k6-summary-${{ steps.scenario.outputs.scenario }}.json" \
             "scenarios/${{ steps.scenario.outputs.scenario }}.js"
+
+      - name: Publish k6 step summary
+        if: always()
+        shell: bash
+        env:
+          SCENARIO_NAME: ${{ steps.scenario.outputs.scenario }}
+          K6_SUMMARY_FILE: results/k6-summary-${{ steps.scenario.outputs.scenario }}.json
+        run: node scripts/writeK6Summary.js
 
       - name: Upload k6 summary
         uses: actions/upload-artifact@v4
