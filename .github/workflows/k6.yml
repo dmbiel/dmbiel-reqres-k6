@@ -69,6 +69,10 @@ jobs:
         shell: bash
         run: npm run validate:baseline-comparison
 
+      - name: Validate HTML report generation
+        shell: bash
+        run: npm run validate:html-report
+
   k6-tests:
     name: Run k6 tests
     runs-on: ubuntu-latest
@@ -163,10 +167,21 @@ jobs:
           K6_BASELINE_SUMMARY_FILE: baselines/k6-summary-${{ steps.scenario.outputs.scenario }}.baseline.json
         run: node scripts/compareK6Summary.js
 
-      - name: Upload k6 summary
+      - name: Generate k6 HTML report
+        if: always()
+        shell: bash
+        env:
+          SCENARIO_NAME: ${{ steps.scenario.outputs.scenario }}
+          K6_SUMMARY_FILE: results/k6-summary-${{ steps.scenario.outputs.scenario }}.json
+          K6_HTML_REPORT_FILE: results/k6-summary-${{ steps.scenario.outputs.scenario }}.html
+        run: node scripts/writeHtmlReport.js
+
+      - name: Upload k6 reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: k6-summary-${{ steps.scenario.outputs.scenario }}
-          path: results/*.json
+          name: k6-reports-${{ steps.scenario.outputs.scenario }}
+          path: |
+            results/*.json
+            results/*.html
           if-no-files-found: warn

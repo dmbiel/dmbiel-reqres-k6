@@ -13,6 +13,7 @@ The project focuses on:
 - response validation with checks;
 - performance quality gates with thresholds;
 - baseline comparison reporting;
+- HTML report artifacts;
 - GitHub Actions integration;
 - safe secret management for API keys.
 
@@ -38,7 +39,7 @@ Performance testing portfolio projects often stop at a single script that sends 
 | Language | JavaScript ES modules |
 | CI | GitHub Actions |
 | Target API | ReqRes |
-| Reports | k6 console summary, JSON summary artifact, GitHub Actions summary, optional baseline comparison |
+| Reports | k6 console summary, JSON summary artifact, HTML artifact, GitHub Actions summary, optional baseline comparison |
 
 ## Tested API
 
@@ -128,6 +129,9 @@ dmbiel-reqres-k6/
 |   `-- .gitkeep
 |-- scripts/
 |   |-- compareK6Summary.js
+|   |-- validateBaselineComparison.js
+|   |-- validateHtmlReport.js
+|   |-- writeHtmlReport.js
 |   `-- writeK6Summary.js
 |-- .gitignore
 |-- CONTRIBUTING.md
@@ -219,10 +223,20 @@ npm run report:compare:stress
 npm run report:compare:spike
 ```
 
+To generate an HTML report from an existing JSON summary without sending new API requests:
+
+```bash
+npm run report:html:smoke
+npm run report:html:load
+npm run report:html:stress
+npm run report:html:spike
+```
+
 To validate baseline comparison behavior without sending API requests:
 
 ```bash
 npm run validate:baseline-comparison
+npm run validate:html-report
 ```
 
 ## Available scenarios
@@ -263,7 +277,8 @@ The workflow in `.github/workflows/k6.yml` runs two jobs:
   - runs the selected k6 scenario;
   - uses `REQRES_API_KEY` from GitHub Secrets;
   - compares the JSON summary with an optional reviewed baseline;
-  - exports and uploads a JSON summary artifact.
+  - generates an HTML report from the JSON summary;
+  - exports and uploads JSON and HTML report artifacts.
 
 The k6 test job runs the smoke scenario on:
 
@@ -289,7 +304,7 @@ Before enabling CI, add the API key as a GitHub Actions repository secret:
 REQRES_API_KEY
 ```
 
-The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a readable GitHub Actions step summary, compares the summary with an optional baseline, writes a JSON summary to `results/`, and uploads the summary as a GitHub Actions artifact.
+The workflow uses `grafana/setup-k6-action`, runs a ReqRes preflight check, runs k6, writes a readable GitHub Actions step summary, compares the summary with an optional baseline, writes a JSON summary to `results/`, generates an HTML report from that JSON summary, and uploads both reports as GitHub Actions artifacts.
 
 The preflight step fails early with a clear message if ReqRes returns `429 rate_limit_exceeded`, `401`, or `403`. This prevents a quota issue from looking like a broken k6 script. The preflight request also consumes one ReqRes request, so avoid repeatedly running manual scenarios on the free tier.
 
@@ -311,6 +326,7 @@ Local and CI runs provide:
 
 - k6 console summary;
 - JSON summary files through `--summary-export`;
+- HTML reports generated from k6 JSON summaries;
 - optional baseline comparison in the GitHub Actions step summary;
 - GitHub Actions artifact upload for CI summaries.
 
@@ -372,7 +388,6 @@ k6, performance-testing, load-testing, api-testing, qa-automation, github-action
 ## Future improvements
 
 - Add Grafana Cloud k6 integration.
-- Add HTML report generation.
 - Add additional custom metrics for data volume and grouped flow behavior.
 - Tune endpoint-specific thresholds after more clean baseline runs.
 - Add test data parametrization.

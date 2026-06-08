@@ -19,6 +19,7 @@ It has two jobs:
    - validates JavaScript syntax with `node --check`;
    - validates k6 scenario configuration with `k6 inspect`;
    - validates baseline comparison behavior with local fixtures;
+   - validates HTML report generation with local fixtures;
    - catches syntax/configuration issues without consuming API quota.
 
 2. `Run k6 tests`
@@ -31,7 +32,8 @@ It has two jobs:
    - runs the selected k6 scenario;
    - publishes a readable GitHub Actions step summary;
    - compares the summary with an optional reviewed baseline;
-   - exports the k6 JSON summary as a GitHub Actions artifact.
+   - generates an HTML report from the k6 JSON summary;
+   - exports k6 JSON and HTML reports as GitHub Actions artifacts.
 
 ## Trigger Strategy
 
@@ -100,14 +102,16 @@ k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
 
 npm run validate:baseline-comparison
+npm run validate:html-report
 ```
 
 ## Reporting
 
-Each k6 run exports two report surfaces:
+Each k6 run exports three report surfaces:
 
 - GitHub Actions step summary for quick review;
 - JSON summary artifact for detailed analysis.
+- HTML report artifact for easier visual review.
 
 The step summary includes:
 
@@ -118,6 +122,8 @@ The step summary includes:
 - p95, p99, and average response time;
 - endpoint-level success rate and duration metrics.
 - baseline comparison when `baselines/k6-summary-<scenario>.baseline.json` exists.
+
+The HTML report is generated from the exported JSON summary. It does not send additional requests to ReqRes.
 
 ## Baseline Comparison
 
