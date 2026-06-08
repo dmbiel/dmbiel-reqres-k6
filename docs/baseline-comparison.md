@@ -47,6 +47,20 @@ The comparison includes:
 - endpoint-specific p95 duration metrics;
 - endpoint-specific success-rate metrics.
 
+## Validation
+
+The comparison script is validated with local fixtures and does not require a ReqRes API key:
+
+```bash
+npm run validate:baseline-comparison
+```
+
+The validation covers:
+
+- stable current summary compared with baseline;
+- missing baseline behavior;
+- regression behavior when `K6_BASELINE_FAIL_ON_REGRESSION=true`.
+
 ## Default Tolerances
 
 | Metric type | Default tolerance |

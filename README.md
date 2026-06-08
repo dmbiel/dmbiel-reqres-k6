@@ -219,6 +219,12 @@ npm run report:compare:stress
 npm run report:compare:spike
 ```
 
+To validate baseline comparison behavior without sending API requests:
+
+```bash
+npm run validate:baseline-comparison
+```
+
 ## Available scenarios
 
 | Scenario | Command | Purpose | Traffic model | Approx. requests |

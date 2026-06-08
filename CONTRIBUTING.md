@@ -44,6 +44,8 @@ k6 inspect scenarios/smoke.js
 k6 inspect scenarios/load.js
 k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
+
+npm run validate:baseline-comparison
 ```
 
 ## Live Run Guidance

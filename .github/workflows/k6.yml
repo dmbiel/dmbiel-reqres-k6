@@ -65,6 +65,10 @@ jobs:
             k6 inspect "$scenario" > /dev/null
           done
 
+      - name: Validate baseline comparison behavior
+        shell: bash
+        run: npm run validate:baseline-comparison
+
   k6-tests:
     name: Run k6 tests
     runs-on: ubuntu-latest

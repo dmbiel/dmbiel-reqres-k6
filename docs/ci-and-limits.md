@@ -18,6 +18,7 @@ It has two jobs:
 
    - validates JavaScript syntax with `node --check`;
    - validates k6 scenario configuration with `k6 inspect`;
+   - validates baseline comparison behavior with local fixtures;
    - catches syntax/configuration issues without consuming API quota.
 
 2. `Run k6 tests`
@@ -97,6 +98,8 @@ k6 inspect scenarios/smoke.js
 k6 inspect scenarios/load.js
 k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
+
+npm run validate:baseline-comparison
 ```
 
 ## Reporting
