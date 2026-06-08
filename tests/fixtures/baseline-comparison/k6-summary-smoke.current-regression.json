@@ -1,0 +1,28 @@
+{
+  "metrics": {
+    "checks": {
+      "value": 0.9,
+      "passes": 9,
+      "fails": 1
+    },
+    "http_req_failed": {
+      "value": 0.08
+    },
+    "http_req_duration": {
+      "avg": 420,
+      "p(95)": 800,
+      "p(99)": 950
+    },
+    "http_reqs": {
+      "count": 6
+    },
+    "endpoint_list_users_duration": {
+      "avg": 390,
+      "p(95)": 650,
+      "max": 820
+    },
+    "endpoint_list_users_success_rate": {
+      "value": 0.85
+    }
+  }
+}

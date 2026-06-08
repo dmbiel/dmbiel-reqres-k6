@@ -7,7 +7,12 @@
     "test:smoke": "k6 run --summary-export results/k6-summary-smoke.json scenarios/smoke.js",
     "test:load": "k6 run --summary-export results/k6-summary-load.json scenarios/load.js",
     "test:stress": "k6 run --summary-export results/k6-summary-stress.json scenarios/stress.js",
-    "test:spike": "k6 run --summary-export results/k6-summary-spike.json scenarios/spike.js"
+    "test:spike": "k6 run --summary-export results/k6-summary-spike.json scenarios/spike.js",
+    "report:compare:smoke": "node scripts/compareK6Summary.js results/k6-summary-smoke.json baselines/k6-summary-smoke.baseline.json",
+    "report:compare:load": "node scripts/compareK6Summary.js results/k6-summary-load.json baselines/k6-summary-load.baseline.json",
+    "report:compare:stress": "node scripts/compareK6Summary.js results/k6-summary-stress.json baselines/k6-summary-stress.baseline.json",
+    "report:compare:spike": "node scripts/compareK6Summary.js results/k6-summary-spike.json baselines/k6-summary-spike.baseline.json",
+    "validate:baseline-comparison": "node scripts/validateBaselineComparison.js"
   },
   "keywords": [
     "k6",

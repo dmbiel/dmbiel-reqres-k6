@@ -44,6 +44,8 @@ k6 inspect scenarios/smoke.js
 k6 inspect scenarios/load.js
 k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
+
+npm run validate:baseline-comparison
 ```
 
 ## Live Run Guidance
@@ -78,6 +80,7 @@ docs: document scenario design
 docs: document secrets management
 chore: add performance scenario issue template
 docs: add contribution guide
+feat: add baseline comparison reporting
 ```
 
 ## Pull Request Checklist
@@ -90,3 +93,4 @@ Before opening or updating a PR:
 - [ ] `k6 inspect` passed for changed scenarios;
 - [ ] live k6 run was skipped when the change is docs-only;
 - [ ] README or docs were updated when strategy, thresholds, metrics, or CI behavior changed.
+- [ ] baseline files were updated only from reviewed, healthy k6 runs.

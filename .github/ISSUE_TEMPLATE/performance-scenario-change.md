@@ -12,6 +12,7 @@ assignees: ""
 - [ ] Existing scenario update
 - [ ] Threshold update
 - [ ] Metric or tag update
+- [ ] Baseline update
 - [ ] CI/reporting update
 - [ ] Documentation-only clarification
 
@@ -50,6 +51,14 @@ Describe threshold changes and why they match the scenario intent.
 - `http_req_duration`:
 - `checks`:
 - endpoint-specific thresholds:
+
+## Baseline Impact
+
+Describe whether this change requires creating or updating a reviewed baseline.
+
+- Baseline file:
+- Reason for update:
+- Evidence that the source run was healthy:
 
 ## Secret and Quota Safety
 

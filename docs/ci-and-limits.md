@@ -18,6 +18,7 @@ It has two jobs:
 
    - validates JavaScript syntax with `node --check`;
    - validates k6 scenario configuration with `k6 inspect`;
+   - validates baseline comparison behavior with local fixtures;
    - catches syntax/configuration issues without consuming API quota.
 
 2. `Run k6 tests`
@@ -29,6 +30,7 @@ It has two jobs:
    - fails early on `429`, `401`, or `403`;
    - runs the selected k6 scenario;
    - publishes a readable GitHub Actions step summary;
+   - compares the summary with an optional reviewed baseline;
    - exports the k6 JSON summary as a GitHub Actions artifact.
 
 ## Trigger Strategy
@@ -42,11 +44,15 @@ It does not run automatically after the PR is merged into `main`. This avoids sp
 
 Draft pull requests run static validation only. The quota-consuming k6 job starts when the pull request is marked ready for review.
 
-Documentation-only changes are ignored by the workflow:
+Documentation-only, baseline-only, and governance-only changes are ignored by the workflow:
 
 - `README.md`
+- `docs/**`
+- `baselines/**`
+- `CONTRIBUTING.md`
 - `.env.example`
 - `LICENSE`
+- GitHub issue and pull request templates
 
 Manual runs are still available through `workflow_dispatch`.
 
@@ -92,6 +98,8 @@ k6 inspect scenarios/smoke.js
 k6 inspect scenarios/load.js
 k6 inspect scenarios/stress.js
 k6 inspect scenarios/spike.js
+
+npm run validate:baseline-comparison
 ```
 
 ## Reporting
@@ -109,6 +117,27 @@ The step summary includes:
 - request count;
 - p95, p99, and average response time;
 - endpoint-level success rate and duration metrics.
+- baseline comparison when `baselines/k6-summary-<scenario>.baseline.json` exists.
+
+## Baseline Comparison
+
+Baseline comparison is performed after the k6 run and uses the exported JSON summary. It does not send additional requests to ReqRes.
+
+The workflow compares:
+
+```text
+results/k6-summary-<scenario>.json
+```
+
+against:
+
+```text
+baselines/k6-summary-<scenario>.baseline.json
+```
+
+If the baseline file is missing, the comparison step writes a short note and exits successfully.
+
+The comparison is informational by default because ReqRes is an external public API. k6 thresholds remain the CI pass/fail gate. For details, see [Baseline Comparison](baseline-comparison.md).
 
 ## Manual Run Guidance
 
